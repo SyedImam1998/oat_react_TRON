@@ -1,25 +1,46 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import ActionBar from './ActionBar/actionBar';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import OwnerRegister   from './components/ownerRegister';
+import TenantRegister from './components/tenantRegister';
+import PastOwners from './components/pastOwners';
+import PastTenants  from './components/pastTenants';
+import HomePage from './components/HomePage';
+import GiveHouse from './components/giveHouse';
+class App extends Component {
+  render() {
+    return (
+      <div className="bg">
+        
+        
+        {/* <OwnerRegister></OwnerRegister> */}
+    
+        <Router>
+        <ActionBar></ActionBar>
+        <Switch>
+          <Route exact path="/" component={HomePage}></Route>
+          <Route exact path="/registerOwner"component={OwnerRegister}></Route>
+          <Route exact path="/registerTenant"component={TenantRegister}></Route>
+          <Route exact path="/pastOwner"component={PastOwners}></Route>
+          <Route exact path="/pastTenant"component={PastTenants}></Route>
+          <Route exact path="/giveHouse" component={GiveHouse}></Route>
+        </Switch>
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+        </Router>
+        
+        
+        
+      </div>
+    );
+  }
 }
 
 export default App;
+
+
