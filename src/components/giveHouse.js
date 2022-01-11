@@ -22,7 +22,7 @@ class giveHouse extends Component {
 
         {
             "amount": "0",
-            "contractAddress": "PQQvQVntNffwZep3fTuovPFiTVj24ey5wS",
+            "contractAddress": "PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e",
             "methodName": "Givehouse",
             "password": "password",
             "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",

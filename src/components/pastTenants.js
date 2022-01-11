@@ -19,7 +19,7 @@ class pastTenants extends Component {
        
        await axios.post('/api/SmartContracts/local-call',
        {
-            "contractAddress": "PQQvQVntNffwZep3fTuovPFiTVj24ey5wS",
+            "contractAddress": "PLD55xrbvxJKoFNxkvodR7MSscf1JN4GQq",
             "methodName": "getTenantsDetails",
             "amount": "0",
             "gasPrice": 100,
@@ -43,7 +43,7 @@ class pastTenants extends Component {
                 // }
                 apiAddress.forEach(async(item)=>{
                    await axios.post('/api/SmartContracts/local-call',{
-                        "contractAddress": "PQQvQVntNffwZep3fTuovPFiTVj24ey5wS",
+                        "contractAddress": "PLD55xrbvxJKoFNxkvodR7MSscf1JN4GQq",
                         "methodName": "getTenants",
                         "amount": "0",
                         "gasPrice": 100,

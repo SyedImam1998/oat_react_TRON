@@ -22,7 +22,7 @@ state={
             })
             await axios.post("/api/SmartContractWallet/call",{
                 "amount": "0",
-                "contractAddress": "PQQvQVntNffwZep3fTuovPFiTVj24ey5wS",
+                "contractAddress": "PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e",
                 "methodName": "setTenant",
                 "password": "password",
                 "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
@@ -32,7 +32,7 @@ state={
                 "feeAmount": "0.001",
                 "gasPrice": 100,
                 "gasLimit": 25000,
-                 "parameters":[`4#${name}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`]
+                 "parameters":[`4#${name}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`,"4#1"]
             }).then((response)=>{
                 if(response.status===200){
                     console.log("All Okay");
@@ -59,13 +59,22 @@ state={
             if(response.status===200){
                 console.log("Tx has been passed");
                 if(response.data.error===null){
-                   console.log("All went good value saved in Contract");
-                //    alert("Data Saved SuccessFully!!!");
-                this.setState({
-                    showloader:false,
-                    showConfirmation:!this.state.showConfirmation,
-                    msg:"",
-                })
+                    if(response.data.returnValue==="okay"){
+                        this.setState({
+                            showloader:false,
+                            showConfirmation:!this.state.showConfirmation,
+                            msg:""
+                        })
+    
+                       }else{
+                        this.setState({
+                            showloader:false,
+                            showConfirmation:!this.state.showConfirmation,
+                            msg:"Tenant Already Exists!!!"
+                        })
+    
+                       }
+                       
                 }
             }
         }).catch((e)=>{

@@ -23,7 +23,7 @@ class ownerRegister extends Component {
         })
         await axios.post("/api/SmartContractWallet/call",{
             "amount": "0",
-            "contractAddress": "PQQvQVntNffwZep3fTuovPFiTVj24ey5wS",
+            "contractAddress": "PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e",
             "methodName": "setOwner",
             "password": "password",
             "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
@@ -33,7 +33,7 @@ class ownerRegister extends Component {
             "feeAmount": "0.001",
             "gasPrice": 100,
             "gasLimit": 25000,
-             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`]
+             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`,"4#1"]
         }).then(async(response)=>{
             console.log(response)
             if(response.status===200){
@@ -64,10 +64,22 @@ class ownerRegister extends Component {
                 console.log("Tx has been passed");
                 if(response.data.error===null){
                    console.log("All went good value saved in Contract");
-                   this.setState({
-                    showloader:false,
-                    showConfirmation:!this.state.showConfirmation,
-                })
+                   if(response.data.returnValue==="okay"){
+                    this.setState({
+                        showloader:false,
+                        showConfirmation:!this.state.showConfirmation,
+                        msg:""
+                    })
+
+                   }else{
+                    this.setState({
+                        showloader:false,
+                        showConfirmation:!this.state.showConfirmation,
+                        msg:"Owner Already Exists!!!"
+                    })
+
+                   }
+                   
                 //    alert("Data Saved SuccessFully!!!");
                 }
             }
@@ -87,7 +99,7 @@ class ownerRegister extends Component {
     render() {
         return (
             <div>
-                <Confirmation showConfirmation={this.state.showConfirmation}  close={this.close}></Confirmation>
+                <Confirmation msg={this.state.msg} showConfirmation={this.state.showConfirmation}  close={this.close}></Confirmation>
             <ShowLoader showLoader={this.state.showloader}></ShowLoader>
 
             <div className='glassEffect1'>
