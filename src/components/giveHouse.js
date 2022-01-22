@@ -15,6 +15,11 @@ class giveHouse extends Component {
         var ownerWalletAddress= document.getElementById("ownerAdd").value.toString();
         var ownerpwd= document.getElementById("ownerpwd").value.toString();
         var tenantWalletAddress= document.getElementById("tenantAdd").value.toString();
+
+        if(ownerWalletAddress===""||ownerpwd===""||tenantWalletAddress===""){
+            alert("All The Fields Needs To Be Filled !!!")
+            return;
+        }
         this.setState({
             showloader:true
         })
@@ -22,7 +27,7 @@ class giveHouse extends Component {
 
         {
             "amount": "0",
-            "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+            "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
             "methodName": "Givehouse",
             "password": "password",
             "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",

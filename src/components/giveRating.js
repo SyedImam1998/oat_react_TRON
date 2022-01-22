@@ -17,13 +17,17 @@ class giveRating extends Component {
         var pwd= document.getElementById("password").value.toString();
         var Address2= document.getElementById("add2").value.toString();
         var rating= document.getElementById("rating").value.toString();
+        if(Address1===""||pwd===""||Address2===""||rating===""){
+            alert("All The Fields Needs To Be Filled !!!")
+            return;
+        }
         this.setState({
             showloader:true
         })
         if(this.state.screen==="owner"){
             axios.post("/api/SmartContractWallet/call",{
                 "amount": "0",
-                "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+                "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
                 "methodName": "setRatingForOwner",
                 "password": "password",
                 "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
@@ -58,7 +62,7 @@ class giveRating extends Component {
         }else{
             axios.post("/api/SmartContractWallet/call",{
                 "amount": "0",
-                "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+                "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
                 "methodName": "setRatingForTenant",
                 "password": "password",
                 "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",

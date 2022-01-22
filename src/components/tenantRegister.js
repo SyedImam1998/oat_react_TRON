@@ -14,16 +14,20 @@ state={
     
         submitDataToContract=async()=>{
             var name=document.getElementById("name").value.toString();
-            var rating= "0";
+           
             var phone= document.getElementById("phone").value.toString();
             var walletAdd= document.getElementById("walletAdd").value.toString();
             var pwd=document.getElementById("password").value.toString();
+            if(name===""|| phone===""||walletAdd===""||pwd===""){
+                alert("All The Fields Needs To Be Filled !!!")
+                return;
+            }
             this.setState({
                 showloader:true
             })
             await axios.post("/api/SmartContractWallet/call",{
                 "amount": "0",
-                "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+                "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
                 "methodName": "setTenantFromFront_end",
                 "password": "password",
                 "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
@@ -33,7 +37,7 @@ state={
                 "feeAmount": "0.001",
                 "gasPrice": 100,
                 "gasLimit": 25000,
-                 "parameters":[`4#${name}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`,`4#${pwd}`]
+                 "parameters":[`4#${name}`,`4#${phone}`,`9#${walletAdd}`,`4#${pwd}`]
             }).then((response)=>{
                 if(response.status===200){
                     console.log("All Okay");

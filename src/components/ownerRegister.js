@@ -13,17 +13,22 @@ class ownerRegister extends Component {
     submitDataToContract=async()=>{
         var name=document.getElementById("name").value.toString();
         var hAdd= document.getElementById("hAdd").value.toString();
-        var rating="0";
+       
         var phone= document.getElementById("phone").value.toString();
         var walletAdd= document.getElementById("walletAdd").value.toString();
         var ownerpwd= document.getElementById("walletPassword").value.toString();
+
+        if(name===""|| hAdd===""||phone===""||walletAdd===""||ownerpwd===""){
+            alert("All The Fields Needs To Be Filled !!!")
+            return
+        }
 
         this.setState({
             showloader:true
         })
         await axios.post("/api/SmartContractWallet/call",{
             "amount": "0",
-            "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+            "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
             "methodName": "setOwnerForFrontend",
             "password": "password",
             "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
@@ -33,7 +38,7 @@ class ownerRegister extends Component {
             "feeAmount": "0.001",
             "gasPrice": 100,
             "gasLimit": 25000,
-             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`]
+             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`4#${phone}`,`9#${walletAdd}`]
         }).then(async(response)=>{
             console.log(response)
             if(response.status===200){

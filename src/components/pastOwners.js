@@ -22,7 +22,7 @@ class pastOwners extends Component {
             showloader:true
         })
         await axios.post('/api/SmartContracts/local-call',{
-            "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+            "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
             "methodName": "getOwnerDetails",
             "amount": "0",
             "gasPrice": 100,
@@ -43,7 +43,7 @@ class pastOwners extends Component {
                 
                 apiAddress.forEach(async(item)=>{
                     await axios.post('/api/SmartContracts/local-call',{
-                         "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+                         "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
                          "methodName": "getSecureOwnerDetails",
                          "amount": "0",
                          "gasPrice": 100,
@@ -86,7 +86,7 @@ class pastOwners extends Component {
       
             getTenantDetails=async(address)=>{
                 await axios.post("/api/SmartContracts/local-call",{
-                    "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+                    "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
                     "methodName": "getSecureTenantDetails",
                     "amount": "0",
                     "gasPrice": 100,
