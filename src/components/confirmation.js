@@ -19,7 +19,7 @@ class Confirmation extends Component {
                     <h3>{this.props.msg===""?"Confirmation":this.state.alert}</h3>
                 </div>
                 <div className="modal-body">
-                    <p className='wakeup'>{this.props.msg===""?"Your Data Has Been Saved SuccessFully!!!":this.props.msg}</p>
+                    <p className='wakeup'>{this.props.msg===""?"Your Data Has Been Saved Successfully!!!":this.props.msg}</p>
     
                 </div>
                 <div className="modal-footer">

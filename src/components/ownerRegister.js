@@ -13,7 +13,7 @@ class ownerRegister extends Component {
     submitDataToContract=async()=>{
         var name=document.getElementById("name").value.toString();
         var hAdd= document.getElementById("hAdd").value.toString();
-        var rating= document.getElementById("rating").value.toString();
+        var rating="0";
         var phone= document.getElementById("phone").value.toString();
         var walletAdd= document.getElementById("walletAdd").value.toString();
         var ownerpwd= document.getElementById("walletPassword").value.toString();
@@ -23,8 +23,8 @@ class ownerRegister extends Component {
         })
         await axios.post("/api/SmartContractWallet/call",{
             "amount": "0",
-            "contractAddress": "PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e",
-            "methodName": "setOwner",
+            "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+            "methodName": "setOwnerForFrontend",
             "password": "password",
             "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
             "walletName": "cirrusdev",
@@ -33,7 +33,7 @@ class ownerRegister extends Component {
             "feeAmount": "0.001",
             "gasPrice": 100,
             "gasLimit": 25000,
-             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`,"4#1"]
+             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`]
         }).then(async(response)=>{
             console.log(response)
             if(response.status===200){
@@ -70,6 +70,11 @@ class ownerRegister extends Component {
                         showConfirmation:!this.state.showConfirmation,
                         msg:""
                     })
+                    document.getElementById("name").value="";
+                     document.getElementById("hAdd").value="";
+                    document.getElementById("phone").value="";
+                    document.getElementById("walletAdd").value="";
+                    document.getElementById("walletPassword").value="";
 
                    }else{
                     this.setState({
@@ -107,12 +112,11 @@ class ownerRegister extends Component {
                 <h2>Owner Registration </h2>
             </div>
                 <div className='ownerReg'>
-                    <input type="text"  id="name" placeholder='Enter Owner Name'></input><br></br>
-                    <input type="text" id="hAdd" placeholder='Enter Owner House Address'></input><br></br>
-                    <input type="number"  id="rating" min="1" max="5" placeholder='Rate your self out of 5'></input><br></br>
+                    <input type="text"  id="name" placeholder='Enter Your Name'></input><br></br>
+                    <input type="text" id="hAdd" placeholder='Enter Your House Address'></input><br></br>
                     <input type="number"  id="phone" placeholder='Enter Mobile Number'></input><br></br>
-                    <input type="text" id="walletAdd" placeholder='Enter the Owners Wallet Address'></input><br></br>
-                    <input type="text" id="walletPassword" placeholder='Enter New Owners OAT Passoword'></input><br></br>
+                    <input type="text" id="walletAdd" placeholder='Enter the Your Wallet Address'></input><br></br>
+                    <input type="password" id="walletPassword" placeholder='Enter New OAT Passoword'></input><br></br>
                     <button className='giveHouseBtn btn-grad' onClick={this.submitDataToContract}>Register</button><br></br>
                     Click here to verify status:<button className='verifyDataBtn' onClick={this.verifyData}>Verify</button>
                 </div>

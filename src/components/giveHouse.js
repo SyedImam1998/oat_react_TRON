@@ -22,7 +22,7 @@ class giveHouse extends Component {
 
         {
             "amount": "0",
-            "contractAddress": "PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e",
+            "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
             "methodName": "Givehouse",
             "password": "password",
             "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
@@ -73,6 +73,10 @@ class giveHouse extends Component {
                             showConfirmation:!this.state.showConfirmation,
                             msg:""
                         })
+                        document.getElementById("ownerAdd").value="";
+                         document.getElementById("ownerpwd").value="";
+                        document.getElementById("tenantAdd").value="";
+
                     }else{
                         this.setState({
                             showloader:false,
@@ -107,7 +111,7 @@ class giveHouse extends Component {
             </div> 
                 <div className='ownerReg ownerReg1'>
                 <input type="text" id="ownerAdd" placeholder='Enter the Owner Wallet Address'></input><br></br>
-                <input type="text" id="ownerpwd"  placeholder='Enter the Owner OAT Password'></input><br></br>
+                <input type="password" id="ownerpwd"  placeholder='Enter the Owner OAT Password'></input><br></br>
                 <input type="text" id="tenantAdd" placeholder='Enter the Tenant Wallet Address'></input><br></br>
                 <button className="giveHouseBtn btn-grad" onClick={this.giveHouse}>Give House</button><br></br>
                 Click here to verify status: <button className='verifyDataBtn' onClick={this.verifyData}>Verify Data</button>

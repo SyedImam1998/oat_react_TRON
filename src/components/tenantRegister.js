@@ -14,16 +14,17 @@ state={
     
         submitDataToContract=async()=>{
             var name=document.getElementById("name").value.toString();
-            var rating= document.getElementById("rating").value.toString();
+            var rating= "0";
             var phone= document.getElementById("phone").value.toString();
             var walletAdd= document.getElementById("walletAdd").value.toString();
+            var pwd=document.getElementById("password").value.toString();
             this.setState({
                 showloader:true
             })
             await axios.post("/api/SmartContractWallet/call",{
                 "amount": "0",
-                "contractAddress": "PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e",
-                "methodName": "setTenant",
+                "contractAddress": "PU8X3HSBKGZiv2tr8gfgx8NiuzGkEPnodM",
+                "methodName": "setTenantFromFront_end",
                 "password": "password",
                 "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
                 "walletName": "cirrusdev",
@@ -32,7 +33,7 @@ state={
                 "feeAmount": "0.001",
                 "gasPrice": 100,
                 "gasLimit": 25000,
-                 "parameters":[`4#${name}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`,"4#1"]
+                 "parameters":[`4#${name}`,`5#${rating}`,`4#${phone}`,`9#${walletAdd}`,`4#${pwd}`]
             }).then((response)=>{
                 if(response.status===200){
                     console.log("All Okay");
@@ -65,6 +66,10 @@ state={
                             showConfirmation:!this.state.showConfirmation,
                             msg:""
                         })
+                        document.getElementById("name").value="";
+                         document.getElementById("phone").value="";
+                        document.getElementById("walletAdd").value="";
+                        document.getElementById("password").value="";
     
                        }else{
                         this.setState({
@@ -101,10 +106,11 @@ state={
                 <h2>Tenant Registration </h2>
             </div>  
             <div className='ownerReg ownerReg1'>
-                <input type="text"  id="name" placeholder='Enter Tenant Name'></input><br></br>
-                <input type="number"  id="rating" min="1" max="5" placeholder='Rate your self out of 5'></input><br></br>
+                <input type="text"  id="name" placeholder='Enter Your Name'></input><br></br>
+                {/* <input type="number"  id="rating" min="1" max="5" placeholder='Rate your self out of 5'></input><br></br> */}
                 <input type="number"  id="phone" placeholder='Enter Mobile Number'></input><br></br>
-                <input type="text" id="walletAdd"  placeholder='Enter the Tenant Wallet Address'></input><br></br>
+                <input type="text" id="walletAdd"  placeholder='Enter the Your Wallet Address'></input><br></br>
+                <input type="password" id="password"  placeholder='Enter New OAT Password'></input><br></br>
                 <button className='giveHouseBtn btn-grad' onClick={this.submitDataToContract}>Register As Tenant</button><br></br>
                 Click here to verify status:<button className='verifyDataBtn' onClick={this.verifyData}>Verify Data</button>
             </div>

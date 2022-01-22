@@ -13,6 +13,7 @@ import PastOwners from './components/pastOwners';
 import PastTenants  from './components/pastTenants';
 import HomePage from './components/HomePage';
 import GiveHouse from './components/giveHouse';
+import GiveRating  from './components/giveRating';
 class App extends Component {
   render() {
     return (
@@ -30,6 +31,7 @@ class App extends Component {
           <Route exact path="/pastOwner"component={PastOwners}></Route>
           <Route exact path="/pastTenant"component={PastTenants}></Route>
           <Route exact path="/giveHouse" component={GiveHouse}></Route>
+          <Route exact path="/giveRating" component={GiveRating}></Route>
         </Switch>
 
         </Router>
