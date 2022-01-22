@@ -90,7 +90,7 @@ class ownerRegister extends Component {
 
                    }
                    
-                //    alert("Data Saved SuccessFully!!!");
+                ///    alert("Data Saved SuccessFully!!!");
                 }
             }
         }).catch((e)=>{
