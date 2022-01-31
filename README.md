@@ -13,4 +13,4 @@ Hi Welcome to OAT Website !!!!!!!!!!!!!!!!! Let me be your guide for today. Let 
 8. If you remember we have generated the newContractAddress at step 18. Now copy that address.
 9. Open the OAT website code which we have already opened in Visual studio code. Press [ctrl+shift+f]. Search “PALv37AFYNTEJh9cEk3yUbaBTuFewZ3G6e” in all the files and replace 
 with the address that we have generated in step 18. That is it we have completed the setting up of the project.
-10. Make sure that Stratis.FullNode.sln is running this is the local blockchain for development. With This we have completed the setting up the Project. Now you can play around the project...... Here is the Youtube Link to see the demo how things are done in OAT.
+10. Make sure that Stratis.FullNode.sln is running this is the local blockchain for development. With This we have completed the setting up the Project. Now you can play around the project...... Here is the Youtube Link to see the demo how things are done in OAT."https://youtu.be/6cu4z24kF2E"
