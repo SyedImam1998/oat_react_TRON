@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './components.css';
 import ShowLoader from './Loader';
+import Web3 from 'web3';
+import OatAbi from '../OAT.json';
 
 
 class pastTenants extends Component {
@@ -13,108 +15,87 @@ class pastTenants extends Component {
         ownerName:"",
         ownerPNumber:"",
         ownerRating:"",
+        // ownerRating:[1,2],
         
     }
+
+    componentDidMount(){
+        this.commonfunction()
+    }
+    
+    commonfunction=async()=>{
+        if(typeof window.ethereum!=='undefined'){
+            const web3= new Web3(window.ethereum);
+            window.ethereum.enable().catch(error => {
+              // User denied account access
+             console.log(error)
+             alert("Please Login with Metamask.")
+              })
+           
+              try{
+               
+                // const netId= await web3.eth.net.getId();
+                const accounts= await web3.eth.getAccounts();
+                this.setState({
+                  account:accounts[0],
+                })
+                console.log(accounts[0]);
+                // const accountBalance= await web3.eth.getBalance(accounts[0]);
+                // const etherAmount= web3.utils.fromWei(accountBalance,'ether');
+                 
+      
+                const Oat= new web3.eth.Contract(OatAbi.abi,"0xb23cD6903E1aBC8bcc8d9D1C44b9E6b3de8b4799")
+                console.log(Oat);
+                this.setState({
+                  OatContract:Oat
+                })
+      
+               
+               
+              
+                
+              }catch(e){
+                window.alert("Contracts went wrong",e);
+                console.log(e)
+      
+              }
+      
+          }
+      
+      
+    }
+   
     getTenantDetails=async()=>{
         var ownerAdd= document.getElementById("ownerAdd").value.toString();
-        await this.getOwnerDetails(ownerAdd);
-        var tenantsDetails=[];
+        // await this.getOwnerDetails(ownerAdd);
+        
         this.setState({
             showloader:true
         })
        
-       await axios.post('/api/SmartContracts/local-call',
-       {
-            "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
-            "methodName": "getTenantsDetails",
-            "amount": "0",
-            "gasPrice": 100,
-            "gasLimit": 100000,
-            "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
-            "parameters": [`9#${ownerAdd}`]
-        }
-
-        ).then((res)=>{
-            
-            if(res.status===200){
-               
-                var apiAddress=res.data.return;
-                if(apiAddress.length===0){
+        await this.state.OatContract.methods.getSecureOwnerDetails(ownerAdd).call().then(async(result)=>{
+            console.log(result);
+            if(result.name!==null){
+                this.setState({
+                    ownerName:result.name,
+                    ownerPNumber:result.pnumber,
+                    ownerRating:result.rating,
+                })
+                if(result.tenantAddresses.length===0){
                     this.setState({
-                        message:"There are No Tenants Found For this Owner."
+                        message:"There are No Tenants Found For this Owner.",
+                        dataFound:false,
+                        tenantsDetailsList:[]
 
+
+                    })
+                }else{
+                    result.tenantAddresses.map(async(item)=>{
+                        this.getTenant(item)
+                         
                     })
                 }
 
-
-
-                // for(var i=0;i<apiAddress.length;i++){
-                
-                   
-
-                // }
-                apiAddress.forEach(async(item)=>{
-                   await axios.post('/api/SmartContracts/local-call',{
-                        "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
-                        "methodName": "getSecureTenantDetails",
-                        "amount": "0",
-                        "gasPrice": 100,
-                        "gasLimit": 100000,
-                        "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
-                        "parameters": [`9#${item}`]
-                    }).then((res)=>{
-                        
-                        if(res.status===200){
-                            tenantsDetails.push(res.data.return)
-                            if(res.data.return.name!=null){
-
-                                this.setState({
-                                    tenantsDetailsList:tenantsDetails,
-                                    dataFound:true
-                                })
-                            }else{
-                                this.setState({
-                                    tenantsDetailsList:[],
-                                    dataFound:false,
-                                    message:"There are No Tenants Found For this Owner"
-
-                                })
-
-                            }
-                           
-                        }
-                    })
-                })
-
-            }
-        }).then((r)=>{
-            console.log("setstate")
-            this.setState({
-                tenantsDetailsList:tenantsDetails,
-            showloader:false
-
-            })
-           
-        })
-       
-    }
-    getOwnerDetails=async(address)=>{
-        await axios.post("/api/SmartContracts/local-call",{
-            "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
-            "methodName": "getSecureOwnerDetails",
-            "amount": "0",
-            "gasPrice": 100,
-            "gasLimit": 100000,
-            "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
-            "parameters": [`9#${address}`]
-        }).then((response)=>{
-            console.log(response)
-            if(response.data.return.name!==null){
-                this.setState({
-                    ownerName:response.data.return.name,
-                    ownerPNumber:response.data.return.pnumber,
-                    ownerRating:response.data.return.rating,
-                })
             }else{
                 this.setState({
                     
@@ -122,14 +103,45 @@ class pastTenants extends Component {
                 })
                   
             }
-            
+
+        }).catch((error)=>{
+            console.log(error);
         })
+        this.setState({
+            showloader:false
+        })
+
+       
+    }
+
+    getTenant=async(address)=>{
+        var tenantsDetails=[];
+        await this.state.OatContract.methods.getSecureTenantDetails(address).call().then((result)=>{
+            tenantsDetails.push(result);
+            this.setState({
+                tenantsDetailsList:tenantsDetails,
+                dataFound:true
+            })
+           
+        }).catch((e)=>{
+            console.log(e);
+        })
+
+
+    }
+
+    myFuc=(total,n)=>{
+        return parseInt(total)+parseInt(n);
 
     }
     
     render() {
         var tenantsDetailsList=this.state.tenantsDetailsList;
         console.log("render",tenantsDetailsList)
+        var sum=this.state.ownerRating.reduce(this.myFuc);
+        console.log(sum);
+        console.log(this.state.ownerRating.length);
+        
         return (
             <div>
             <ShowLoader showLoader={this.state.showloader}></ShowLoader>
@@ -148,7 +160,8 @@ class pastTenants extends Component {
                                 <div className='details'>
                                 <p>Name: {this.state.ownerName}</p>
                                 <p>Phone Number: {this.state.ownerPNumber}</p>
-                                <p>Rating: {this.state.ownerRating} stars</p>
+                               {this.state.ownerRating.length===0?<p>Rating: No One Rated</p>:<p>Rating: {(this.state.ownerRating.reduce(this.myFuc))/this.state.ownerRating.length} stars</p>} 
+
                                 </div>
                                 <div className='person'>
                                 <div className="head">
@@ -173,13 +186,14 @@ class pastTenants extends Component {
                   
                   {
                       this.state.tenantsDetailsList.map((list)=>{
+                        console.log(list.rating)
                           return(
                               
                           <div className='listglassEffect'>
                               <div className='details'>
                               <p>Name: {list.name}</p>
                               <p>Phone Number: {list.pnumber}</p>
-                              <p>Rating: {list.rating} stars</p>
+                              {list.rating.length===0 ? <p>Rating: No one Rated</p>:<p>Rating: {list.rating.reduce(this.myFuc)} stars</p>}
                               </div>
                               <div className='person'>
                               <div className="head">

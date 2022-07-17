@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './components.css';
 import ShowLoader from './Loader';
+import Web3 from 'web3';
+import OatAbi from '../OAT.json';
 import Confirmation  from './confirmation';
 class tenantRegister extends Component {
 
@@ -9,7 +11,54 @@ state={
     txId:"",
     showloader:false,
     showConfirmation:false,
-    msg:""
+    msg:"",
+    account:"",
+    OatContract:""
+}
+componentDidMount(){
+    this.commonfunction()
+}
+
+commonfunction=async()=>{
+    if(typeof window.ethereum!=='undefined'){
+        const web3= new Web3(window.ethereum);
+        window.ethereum.enable().catch(error => {
+          // User denied account access
+         console.log(error)
+         alert("Please Login with Metamask.")
+          })
+       
+          try{
+           
+            // const netId= await web3.eth.net.getId();
+            const accounts= await web3.eth.getAccounts();
+            this.setState({
+              account:accounts[0],
+            })
+            console.log(accounts[0]);
+            // const accountBalance= await web3.eth.getBalance(accounts[0]);
+            // const etherAmount= web3.utils.fromWei(accountBalance,'ether');
+             
+  
+            const Oat= new web3.eth.Contract(OatAbi.abi,"0xb23cD6903E1aBC8bcc8d9D1C44b9E6b3de8b4799")
+            console.log(Oat);
+            this.setState({
+              OatContract:Oat
+            })
+  
+           
+           
+          
+            
+          }catch(e){
+            window.alert("Contracts went wrong",e);
+            console.log(e)
+  
+          }
+  
+      }
+  
+  
 }
     
         submitDataToContract=async()=>{
@@ -25,35 +74,26 @@ state={
             this.setState({
                 showloader:true
             })
-            await axios.post("/api/SmartContractWallet/call",{
-                "amount": "0",
-                "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
-                "methodName": "setTenantFromFront_end",
-                "password": "password",
-                "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
-                "walletName": "cirrusdev",
-                "accountName": "account 0",
-                "outpoints": null,
-                "feeAmount": "0.001",
-                "gasPrice": 100,
-                "gasLimit": 25000,
-                 "parameters":[`4#${name}`,`4#${phone}`,`9#${walletAdd}`,`4#${pwd}`]
-            }).then((response)=>{
-                if(response.status===200){
-                    console.log("All Okay");
-                 var txId=response.data.transactionId;
-                 this.setState({
-                    txId:txId
-                },()=>{
-                    this.verifyData();
+            await this.state.OatContract.methods.setTenant(name,phone,walletAdd,pwd).send({from:this.state.account}).then((result)=>{
+                document.getElementById("name").value="";
+                document.getElementById("phone").value="";
+                document.getElementById("walletAdd").value="";
+                document.getElementById("password").value=""; 
+                this.setState({
+                    showloader:false,
+                    showConfirmation:!this.state.showConfirmation,
+                    msg:""
                 })
-                }
+               
+
             }).catch((e)=>{
+                alert("Something went wrong!!!");
                 this.setState({
                     showloader:false,
                    
                  })
             })
+            
     }
     verifyData=async()=>{
         this.setState({
@@ -70,10 +110,7 @@ state={
                             showConfirmation:!this.state.showConfirmation,
                             msg:""
                         })
-                        document.getElementById("name").value="";
-                         document.getElementById("phone").value="";
-                        document.getElementById("walletAdd").value="";
-                        document.getElementById("password").value="";
+                       
     
                        }else{
                         this.setState({
@@ -99,6 +136,7 @@ state={
         })
     }
     render() {
+        console.log(this.state.account)
         return (
             <div>
             <Confirmation msg={this.state.msg} showConfirmation={this.state.showConfirmation}  close={this.close}></Confirmation>
@@ -113,10 +151,10 @@ state={
                 <input type="text"  id="name" placeholder='Enter Your Name'></input><br></br>
                 {/* <input type="number"  id="rating" min="1" max="5" placeholder='Rate your self out of 5'></input><br></br> */}
                 <input type="number"  id="phone" placeholder='Enter Mobile Number'></input><br></br>
-                <input type="text" id="walletAdd"  placeholder='Enter the Your Wallet Address'></input><br></br>
+                <input type="text" id="walletAdd" value={this.state.account}  placeholder='Enter the Your Wallet Address'></input><br></br>
                 <input type="password" id="password"  placeholder='Enter New OAT Password'></input><br></br>
                 <button className='giveHouseBtn btn-grad' onClick={this.submitDataToContract}>Register As Tenant</button><br></br>
-                Click here to verify status:<button className='verifyDataBtn' onClick={this.verifyData}>Verify Data</button>
+                {/* Click here to verify status:<button className='verifyDataBtn' onClick={this.verifyData}>Verify Data</button> */}
             </div>
         </div>
         </div>

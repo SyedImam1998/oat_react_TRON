@@ -1,16 +1,69 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import './components.css';
+import OatAbi from '../OAT.json';
+
 import ShowLoader from './Loader';
 import Confirmation  from './confirmation';
+import Web3 from 'web3';
+
 class ownerRegister extends Component {
     state={
         txId:"",
         showloader:false,
         showConfirmation:false,
-        msg:""
+        msg:"",
+        account:"",
+        OatContract:""
     }
+
+    componentDidMount(){
+    this.commonfunction();
+    }
+    commonfunction=async()=>{
+        if(typeof window.ethereum!=='undefined'){
+            const web3= new Web3(window.ethereum);
+            window.ethereum.enable().catch(error => {
+              // User denied account access
+             console.log(error)
+             alert("Please Login with Metamask.")
+              })
+           
+              try{
+               
+                // const netId= await web3.eth.net.getId();
+                const accounts= await web3.eth.getAccounts();
+                this.setState({
+                  account:accounts[0],
+                })
+                console.log(accounts[0]);
+                // const accountBalance= await web3.eth.getBalance(accounts[0]);
+                // const etherAmount= web3.utils.fromWei(accountBalance,'ether');
+                 
+      
+                const Oat= new web3.eth.Contract(OatAbi.abi,"0xb23cD6903E1aBC8bcc8d9D1C44b9E6b3de8b4799")
+                console.log(Oat);
+                this.setState({
+                  OatContract:Oat
+                })
+      
+               
+               
+              
+                
+              }catch(e){
+                window.alert("Contracts went wrong",e);
+                console.log(e)
+      
+              }
+      
+          }
+      
+      
+    }
+  
     submitDataToContract=async()=>{
+        console.log(this.state.OatContract);
         var name=document.getElementById("name").value.toString();
         var hAdd= document.getElementById("hAdd").value.toString();
        
@@ -26,79 +79,36 @@ class ownerRegister extends Component {
         this.setState({
             showloader:true
         })
-        await axios.post("/api/SmartContractWallet/call",{
-            "amount": "0",
-            "contractAddress": "PGHQj1bRntTmg3atP2923Ruu1n3i9WiYmc",
-            "methodName": "setOwnerForFrontend",
-            "password": "password",
-            "sender": "PJ9pf2fdzf2oWbeCJWWBXMuBERsZywKSCd",
-            "walletName": "cirrusdev",
-            "accountName": "account 0",
-            "outpoints": null,
-            "feeAmount": "0.001",
-            "gasPrice": 100,
-            "gasLimit": 25000,
-             "parameters":[`4#${name}`,`4#${ownerpwd}`,`4#${hAdd}`,`4#${phone}`,`9#${walletAdd}`]
-        }).then(async(response)=>{
-            console.log(response)
-            if(response.status===200){
-                console.log("All Okay");
-             var txId=response.data.transactionId;
-             console.log("txid:",txId);
-             this.setState({
-                 txId:txId
-             },()=>{
-                 this.verifyData();
-             })
-            }
-        }).catch((e)=>{
+
+        await this.state.OatContract.methods.setOwner(name,ownerpwd,hAdd,phone,walletAdd).send({from:this.state.account}).then((result)=>{
+            // alert("Data Saved Successfully!!!")
+            document.getElementById("hAdd").value="";
+             document.getElementById("name").value="";
+                document.getElementById("phone").value="";
+                document.getElementById("walletAdd").value="";
+                document.getElementById("walletPassword").value=""; 
             this.setState({
                 showloader:false,
+                msg:"",
+                showConfirmation:!this.state.showConfirmation,
+                 
                
              })
-        })
+          }).catch((error)=>{
+            // alert("Something went wrong!!!");
+            this.setState({
+                showloader:false,
+                msg:"Something went wrong!!!",
+               showConfirmation:!this.state.showConfirmation,
+               
+             })
+
+          });
+       
+       
 
     }
-    verifyData=async()=>{
-        this.setState({
-            showloader:true
-        })
-        await axios.get(`/api/SmartContracts/receipt?txHash=${this.state.txId}`).then((response)=>{
-            console.log("response for TXID",response)
-            if(response.status===200){
-                console.log("Tx has been passed");
-                if(response.data.error===null){
-                   console.log("All went good value saved in Contract");
-                   if(response.data.returnValue==="okay"){
-                    this.setState({
-                        showloader:false,
-                        showConfirmation:!this.state.showConfirmation,
-                        msg:""
-                    })
-                    document.getElementById("name").value="";
-                     document.getElementById("hAdd").value="";
-                    document.getElementById("phone").value="";
-                    document.getElementById("walletAdd").value="";
-                    document.getElementById("walletPassword").value="";
-
-                   }else{
-                    this.setState({
-                        showloader:false,
-                        showConfirmation:!this.state.showConfirmation,
-                        msg:"Owner Already Exists!!!"
-                    })
-
-                   }
-                   
-                ///    alert("Data Saved SuccessFully!!!");
-                }
-            }
-        }).catch((e)=>{
-            console.log("error for TXID", e);
-            this.verifyData();
-        })
-
-    }
+    
     close=()=>{
         this.setState({
             showConfirmation:!this.state.showConfirmation,
@@ -120,10 +130,10 @@ class ownerRegister extends Component {
                     <input type="text"  id="name" placeholder='Enter Your Name'></input><br></br>
                     <input type="text" id="hAdd" placeholder='Enter Your House Address'></input><br></br>
                     <input type="number"  id="phone" placeholder='Enter Mobile Number'></input><br></br>
-                    <input type="text" id="walletAdd" placeholder='Enter the Your Wallet Address'></input><br></br>
+                    <input type="text" id="walletAdd" value={this.state.account} placeholder='Enter the Your Wallet Address'></input><br></br>
                     <input type="password" id="walletPassword" placeholder='Enter New OAT Passoword'></input><br></br>
                     <button className='giveHouseBtn btn-grad' onClick={this.submitDataToContract}>Register</button><br></br>
-                    Click here to verify status:<button className='verifyDataBtn' onClick={this.verifyData}>Verify</button>
+                    {/* Click here to verify status:<button className='verifyDataBtn' onClick={this.verifyData}>Verify</button> */}
                 </div>
             </div>
             </div>
